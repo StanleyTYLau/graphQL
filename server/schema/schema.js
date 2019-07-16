@@ -1,6 +1,11 @@
 const graphql = require('graphql')
 
-const {GraphQLObjectType, GraphQLString, GraphQLSchema} = graphql
+const {
+  GraphQLObjectType, 
+  GraphQLString, 
+  GraphQLSchema,
+  GraphQLID, // params can use integer or string type
+} = graphql
 
 // dummy data
 let cheeses = [
@@ -9,12 +14,27 @@ let cheeses = [
   {name: "Blue", milk: "goat", id: "3"},
 ]
 
+let producers = [
+  {name: "Saputo", country: "Canada", id: "1"},
+  {name: "Meiji", country: "Japan", id: "2"},
+  {name: "Danone", country: "France", id: "3"},
+]
+
 const CheeseType = new GraphQLObjectType({
   name: 'Cheese',
   fields: () => ({
-    id: {type: GraphQLString},
+    id: {type: GraphQLID},
     name: {type: GraphQLString},
     milk: {type: GraphQLString},
+  })
+})
+
+const ProducerType = new GraphQLObjectType({
+  name: 'Producer',
+  fields: () => ({
+    id: {type: GraphQLID},
+    name: {type: GraphQLString},
+    country: {type: GraphQLString},
   })
 })
 
@@ -23,7 +43,7 @@ const RootQuery = new GraphQLObjectType({
   fields: {
     cheese: {
       type: CheeseType,
-      args: {id:{type:GraphQLString}},
+      args: {id:{type:GraphQLID}},
       resolve(parent, args){
         // Code to get data from DB/other source
         for (let i of cheeses) {
@@ -33,7 +53,19 @@ const RootQuery = new GraphQLObjectType({
         }
 
       }
+    },
+    producer: {
+      type: ProducerType,
+      args: {id: {type: GraphQLID}},
+      resolve(parent, args){
+        for (let i of producers) {
+          if (i.id === args.id) {
+            return i
+          }
+        }
+      }
     }
+
   }
 })
 
