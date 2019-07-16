@@ -9,9 +9,9 @@ const {
 
 // dummy data
 let cheeses = [
-  {name: "Mozerlla", milk: "cow", id: "1"},
-  {name: "Cheddar", milk: "cow", id: "2"},
-  {name: "Blue", milk: "goat", id: "3"},
+  {name: "Gouda", milk: "goat", id: "1", producerID: "1"},
+  {name: "Cheddar", milk: "cow", id: "2", producerID: "2"},
+  {name: "Feta", milk: "goat", id: "3", producerID: "3"},
 ]
 
 let producers = [
@@ -26,6 +26,16 @@ const CheeseType = new GraphQLObjectType({
     id: {type: GraphQLID},
     name: {type: GraphQLString},
     milk: {type: GraphQLString},
+    producer: {
+      type: ProducerType,
+      resolve(parent, args){
+        for (let i of producers) {
+          if (i.id === parent.producerID) {
+            return i
+          }
+        }
+      }
+    }
   })
 })
 
