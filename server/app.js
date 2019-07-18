@@ -1,8 +1,15 @@
+require('dotenv').config()
 const express = require('express')
 const graphqlHTTP = require('express-graphql')
 const schema = require('./schema/schema')
+const mongoose = require('mongoose')
 
 const app = express()
+
+mongoose.connect(`mongodb://${process.env.CHEESE_NAME}:${process.env.CHEESE_KEY}@ds151997.mlab.com:51997/gql-cheesey`, { useNewUrlParser: true })
+mongoose.connection.once('open', () => {
+  console.log("Connected to DB")
+})
 
 // setup middleware
 // On the endpoint '/graphql', express will hand off the request to the graphqlHTTP function 
