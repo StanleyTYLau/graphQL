@@ -1,4 +1,7 @@
 const graphql = require('graphql')
+const Cheese = require('../models/cheese')
+const Producer = require('../models/producer')
+
 
 const {
   GraphQLObjectType, 
@@ -9,17 +12,29 @@ const {
 } = graphql
 
 // dummy data
+<<<<<<< HEAD
 let cheeses = [
   {name: "Gouda", milk: "goat", id: "1", producerIDs: ["1","2"]},
   {name: "Cheddar", milk: "cow", id: "2", producerIDs: ["2"]},
   {name: "Feta", milk: "goat", id: "3", producerIDs: ["1","2","3"]},
 ]
+=======
+// let cheeseDB = [
+//   {name: "Gouda", milk: "goat", id: "1", producerID: "1"},
+//   {name: "Cheddar", milk: "cow", id: "2", producerID: "2"},
+//   {name: "Feta", milk: "goat", id: "3", producerID: "3"},
+//   {name: "Asiago", milk: "goat", id: "4", producerID: "1"},
+//   {name: "Mozzarella", milk: "cow", id: "5", producerID: "3"},
+//   {name: "Havarti", milk: "goat", id: "6", producerID: "3"},
 
-let producers = [
-  {name: "Saputo", country: "Canada", id: "1"},
-  {name: "Meiji", country: "Japan", id: "2"},
-  {name: "Danone", country: "France", id: "3"},
-]
+// ]
+>>>>>>> 91522f339b8a957fb4b8b38efba61a04dcf084df
+
+// let producerDB = [
+//   {name: "Saputo", country: "Canada", id: "1"},
+//   {name: "Meiji", country: "Japan", id: "2"},
+//   {name: "Danone", country: "France", id: "3"},
+// ]
 
 const CheeseType = new GraphQLObjectType({
   name: 'Cheese',
@@ -30,6 +45,7 @@ const CheeseType = new GraphQLObjectType({
     producer: {
       type: GraphQLList(ProducerType),
       resolve(parent, args){
+<<<<<<< HEAD
         producerList = []
         // loop parent.producerID
         for (let searchID of parent.producerIDs) {
@@ -38,6 +54,11 @@ const CheeseType = new GraphQLObjectType({
             if (producer.id === searchID) {
               producerList.push(producer)
             }
+=======
+        for (let producer of producerDB) {
+          if (producer.id === parent.producerID) {
+            return producer
+>>>>>>> 91522f339b8a957fb4b8b38efba61a04dcf084df
           }
         }
         return producerList
@@ -52,6 +73,18 @@ const ProducerType = new GraphQLObjectType({
     id: {type: GraphQLID},
     name: {type: GraphQLString},
     country: {type: GraphQLString},
+    cheese: {
+      type: new GraphQLList(CheeseType),
+      resolve(parent, args) {
+        cheeseList = []
+        for (let cheese of cheeseDB) {
+          if (cheese.producerID === parent.id) {
+            cheeseList.push(cheese)
+          }
+        }
+        return cheeseList
+      }
+    }
   })
 })
 
@@ -63,29 +96,78 @@ const RootQuery = new GraphQLObjectType({
       args: {id:{type:GraphQLID}},
       resolve(parent, args){
         // Code to get data from DB/other source
-        for (let i of cheeses) {
-          if (i.id === args.id) {
-            return i
-          }
-        }
+        // for (let i of cheeseDB) {
+        //   if (i.id === args.id) {
+        //     return i
+        //   }
+        // }
 
+      }
+    },
+    cheeses: {
+      type: new GraphQLList(CheeseType),
+      resolve(parent, args) {
+        // return cheeseDB
       }
     },
     producer: {
       type: ProducerType,
       args: {id: {type: GraphQLID}},
       resolve(parent, args){
-        for (let i of producers) {
-          if (i.id === args.id) {
-            return i
-          }
-        }
+        // for (let i of producerDB) {
+        //   if (i.id === args.id) {
+        //     return i
+        //   }
+        // }
       }
-    }
+    },
+    producers: {
+      type: new GraphQLList(ProducerType),
+      resolve(parent, args) {
+        // return producerDB
+      }
+    },
 
   }
 })
 
+const Mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    addProducer: {
+      type: ProducerType,
+      args: {
+        name: {type: GraphQLString},
+        country: {type: GraphQLString}
+      },
+      resolve(parent, args){
+        let producer = new Producer({
+          name: args.name,
+          country: args.country
+        })
+        return producer.save()
+      }
+    },
+    addCheese: {
+      type: CheeseType,
+      args: {
+        name: {type: GraphQLString},
+        milk: {type: GraphQLString},
+        producerID: {type: GraphQLID}
+      },
+      resolve(parent, args){
+        let cheese = new Cheese({
+          name: args.name,
+          milk: args.milk,
+          producerID: args.producerID
+        })
+        return cheese.save()
+      }
+    }
+  }
+})
+
 module.exports = new GraphQLSchema({
-  query: RootQuery
+  query: RootQuery,
+  mutation: Mutation
 })
