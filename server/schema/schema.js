@@ -127,6 +127,22 @@ const Mutation = new GraphQLObjectType({
         })
         return producer.save()
       }
+    },
+    addCheese: {
+      type: CheeseType,
+      args: {
+        name: {type: GraphQLString},
+        milk: {type: GraphQLString},
+        producerID: {type: GraphQLID}
+      },
+      resolve(parent, args){
+        let cheese = new Cheese({
+          name: args.name,
+          milk: args.milk,
+          producerID: args.producerID
+        })
+        return cheese.save()
+      }
     }
   }
 })
