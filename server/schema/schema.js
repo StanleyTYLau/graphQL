@@ -4,14 +4,15 @@ const {
   GraphQLObjectType, 
   GraphQLString, 
   GraphQLSchema,
+  GraphQLList,
   GraphQLID, // params can use integer or string type
 } = graphql
 
 // dummy data
 let cheeses = [
-  {name: "Gouda", milk: "goat", id: "1", producerID: "1"},
-  {name: "Cheddar", milk: "cow", id: "2", producerID: "2"},
-  {name: "Feta", milk: "goat", id: "3", producerID: "3"},
+  {name: "Gouda", milk: "goat", id: "1", producerIDs: ["1","2"]},
+  {name: "Cheddar", milk: "cow", id: "2", producerIDs: ["2"]},
+  {name: "Feta", milk: "goat", id: "3", producerIDs: ["1","2","3"]},
 ]
 
 let producers = [
@@ -27,13 +28,19 @@ const CheeseType = new GraphQLObjectType({
     name: {type: GraphQLString},
     milk: {type: GraphQLString},
     producer: {
-      type: ProducerType,
+      type: GraphQLList(ProducerType),
       resolve(parent, args){
-        for (let i of producers) {
-          if (i.id === parent.producerID) {
-            return i
+        producerList = []
+        // loop parent.producerID
+        for (let searchID of parent.producerIDs) {
+          // loop list of producers
+          for (let producer of producers) {
+            if (producer.id === searchID) {
+              producerList.push(producer)
+            }
           }
         }
+        return producerList
       }
     }
   })
