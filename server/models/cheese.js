@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const cheeseSchema = new Schema({
   name: String,
   milk: String,
-  producerID: String
+  producerIDs: [String] 
 })
 
 module.exports = mongoose.model('Cheese', cheeseSchema)
