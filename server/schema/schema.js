@@ -12,29 +12,20 @@ const {
 } = graphql
 
 // dummy data
-<<<<<<< HEAD
-let cheeses = [
+let cheeseDB = [
   {name: "Gouda", milk: "goat", id: "1", producerIDs: ["1","2"]},
-  {name: "Cheddar", milk: "cow", id: "2", producerIDs: ["2"]},
+  {name: "Cheddar", milk: "cow", id: "2", producerIDs: ["2","3"]},
   {name: "Feta", milk: "goat", id: "3", producerIDs: ["1","2","3"]},
+  {name: "Asiago", milk: "goat", id: "4", producerIDs: ["1"]},
+  {name: "Mozzarella", milk: "cow", id: "5", producerIDs: ["3"]},
+  {name: "Havarti", milk: "goat", id: "6", producerIDs: ["1","3"]},
 ]
-=======
-// let cheeseDB = [
-//   {name: "Gouda", milk: "goat", id: "1", producerID: "1"},
-//   {name: "Cheddar", milk: "cow", id: "2", producerID: "2"},
-//   {name: "Feta", milk: "goat", id: "3", producerID: "3"},
-//   {name: "Asiago", milk: "goat", id: "4", producerID: "1"},
-//   {name: "Mozzarella", milk: "cow", id: "5", producerID: "3"},
-//   {name: "Havarti", milk: "goat", id: "6", producerID: "3"},
 
-// ]
->>>>>>> 91522f339b8a957fb4b8b38efba61a04dcf084df
-
-// let producerDB = [
-//   {name: "Saputo", country: "Canada", id: "1"},
-//   {name: "Meiji", country: "Japan", id: "2"},
-//   {name: "Danone", country: "France", id: "3"},
-// ]
+let producerDB = [
+  {name: "Saputo", country: "Canada", id: "1"},
+  {name: "Meiji", country: "Japan", id: "2"},
+  {name: "Danone", country: "France", id: "3"},
+]
 
 const CheeseType = new GraphQLObjectType({
   name: 'Cheese',
@@ -45,20 +36,14 @@ const CheeseType = new GraphQLObjectType({
     producer: {
       type: GraphQLList(ProducerType),
       resolve(parent, args){
-<<<<<<< HEAD
         producerList = []
         // loop parent.producerID
         for (let searchID of parent.producerIDs) {
           // loop list of producers
-          for (let producer of producers) {
+          for (let producer of producerDB) {
             if (producer.id === searchID) {
               producerList.push(producer)
             }
-=======
-        for (let producer of producerDB) {
-          if (producer.id === parent.producerID) {
-            return producer
->>>>>>> 91522f339b8a957fb4b8b38efba61a04dcf084df
           }
         }
         return producerList
@@ -78,7 +63,7 @@ const ProducerType = new GraphQLObjectType({
       resolve(parent, args) {
         cheeseList = []
         for (let cheese of cheeseDB) {
-          if (cheese.producerID === parent.id) {
+          if (cheese.producerIDs.includes(parent.id)) {
             cheeseList.push(cheese)
           }
         }
@@ -96,35 +81,35 @@ const RootQuery = new GraphQLObjectType({
       args: {id:{type:GraphQLID}},
       resolve(parent, args){
         // Code to get data from DB/other source
-        // for (let i of cheeseDB) {
-        //   if (i.id === args.id) {
-        //     return i
-        //   }
-        // }
+        for (let i of cheeseDB) {
+          if (i.id === args.id) {
+            return i
+          }
+        }
 
       }
     },
     cheeses: {
       type: new GraphQLList(CheeseType),
       resolve(parent, args) {
-        // return cheeseDB
+        return cheeseDB
       }
     },
     producer: {
       type: ProducerType,
       args: {id: {type: GraphQLID}},
       resolve(parent, args){
-        // for (let i of producerDB) {
-        //   if (i.id === args.id) {
-        //     return i
-        //   }
-        // }
+        for (let i of producerDB) {
+          if (i.id === args.id) {
+            return i
+          }
+        }
       }
     },
     producers: {
       type: new GraphQLList(ProducerType),
       resolve(parent, args) {
-        // return producerDB
+        return producerDB
       }
     },
 
