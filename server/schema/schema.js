@@ -33,18 +33,16 @@ const CheeseType = new GraphQLObjectType({
     id: {type: GraphQLID},
     name: {type: GraphQLString},
     milk: {type: GraphQLString},
-    producer: {
+    producers: {
       type: GraphQLList(ProducerType),
       resolve(parent, args){
+        // Using dummy data:
         producerList = []
         // loop parent.producerID
         for (let searchID of parent.producerIDs) {
-          // loop list of producers
-          for (let producer of producerDB) {
-            if (producer.id === searchID) {
-              producerList.push(producer)
-            }
-          }
+          // Find producer & push to array
+          producer = Producer.findById(searchID)
+          producerList.push(producer)
         }
         return producerList
       }
@@ -58,16 +56,16 @@ const ProducerType = new GraphQLObjectType({
     id: {type: GraphQLID},
     name: {type: GraphQLString},
     country: {type: GraphQLString},
-    cheese: {
-      type: new GraphQLList(CheeseType),
+    cheeses: {
+      type: GraphQLList(CheeseType),
       resolve(parent, args) {
-        cheeseList = []
-        for (let cheese of cheeseDB) {
-          if (cheese.producerIDs.includes(parent.id)) {
-            cheeseList.push(cheese)
-          }
-        }
-        return cheeseList
+        // cheeseList = []
+        // for (let cheese of cheeseDB) {
+        //   if (cheese.producerIDs.includes(parent.id)) {
+        //     cheeseList.push(cheese)
+        //   }
+        // }
+        return Cheese.find({producerIDs: parent.id})
       }
     }
   })
