@@ -138,13 +138,13 @@ const Mutation = new GraphQLObjectType({
       args: {
         name: {type: GraphQLString},
         milk: {type: GraphQLString},
-        producerID: {type: GraphQLID}
+        producerIDs: {type: GraphQLList(GraphQLID)}
       },
       resolve(parent, args){
         let cheese = new Cheese({
           name: args.name,
           milk: args.milk,
-          producerID: args.producerID
+          producerIDs: args.producerIDs
         })
         return cheese.save()
       }
