@@ -9,6 +9,7 @@ const {
   GraphQLSchema,
   GraphQLList,
   GraphQLID, // params can use integer or string type
+  GraphQLNonNull,
 } = graphql
 
 // dummy data
@@ -126,8 +127,8 @@ const Mutation = new GraphQLObjectType({
     addProducer: {
       type: ProducerType,
       args: {
-        name: {type: GraphQLString},
-        country: {type: GraphQLString}
+        name: {type: new GraphQLNonNull(GraphQLString)},
+        country: {type: new GraphQLNonNull(GraphQLString)}
       },
       resolve(parent, args){
         let producer = new Producer({
@@ -140,9 +141,9 @@ const Mutation = new GraphQLObjectType({
     addCheese: {
       type: CheeseType,
       args: {
-        name: {type: GraphQLString},
-        milk: {type: GraphQLString},
-        producerIDs: {type: GraphQLList(GraphQLID)}
+        name: {type: GraphQLNonNull(GraphQLString)},
+        milk: {type: GraphQLNonNull(GraphQLString)},
+        producerIDs: {type: GraphQLNonNull(GraphQLList(GraphQLID))}
       },
       resolve(parent, args){
         let cheese = new Cheese({
