@@ -12,14 +12,32 @@ const getCheesesQuery = gql`
   }
 `
 
+function displayCheeses(props){
+  let data = props.data;
+  
+  if (data.loading) {
+    return (
+      <div>
+        Loading cheeses...
+      </div>
+    );
+  } else {
+    return data.cheeses.map(cheese => {
+      return(
+        <li key={cheese.id}>
+          name: {cheese.name}
+        </li>
+      );
+    })
+  }
+}
+
 function BookList(props) {
   console.log(props)
   return (
     <div>
       <ul id="cheese-list">
-        <li>
-          Cheese name
-        </li>
+        {displayCheeses(props)}
       </ul>
     </div>
   );
