@@ -1,6 +1,19 @@
 import React from 'react';
+import {gql} from 'apollo-boost';
+import {graphql} from 'react-apollo';
 
-function BookList() {
+const getCheesesQuery = gql`
+  {
+    cheeses {
+      name
+      milk
+      id
+    }
+  }
+`
+
+function BookList(props) {
+  console.log(props)
   return (
     <div>
       <ul id="cheese-list">
@@ -12,4 +25,4 @@ function BookList() {
   );
 }
 
-export default BookList;
+export default graphql(getCheesesQuery)(BookList);
