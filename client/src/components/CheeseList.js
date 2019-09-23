@@ -12,6 +12,17 @@ const getCheesesQuery = gql`
   }
 `
 
+function BookList(props) {
+  console.log(props)
+  return (
+    <div>
+      <ul id="cheese-list">
+        {displayCheeses(props)}
+      </ul>
+    </div>
+  );
+}
+
 function displayCheeses(props){
   let data = props.data;
   
@@ -30,17 +41,6 @@ function displayCheeses(props){
       );
     })
   }
-}
-
-function BookList(props) {
-  console.log(props)
-  return (
-    <div>
-      <ul id="cheese-list">
-        {displayCheeses(props)}
-      </ul>
-    </div>
-  );
 }
 
 export default graphql(getCheesesQuery)(BookList);

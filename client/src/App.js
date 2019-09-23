@@ -4,6 +4,7 @@ import { ApolloProvider } from 'react-apollo';
 
 // components
 import CheeseList from "./components/CheeseList"
+import AddCheese from "./components/AddCheese"
 
 // apollo client setup
 const client = new ApolloClient({
@@ -16,6 +17,7 @@ function App() {
       <div id="main">
       <h1>Amazing Cheeses List!!!</h1>
       <CheeseList/>
+      <AddCheese/>
       </div>
     </ApolloProvider>
   );
